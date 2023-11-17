@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>List Files in Folder</title>
+</head>
+<body>
+  <h1>List of Files</h1>
+  <div id="fileList"></div>
+
+  <script>
+    // Function to fetch files from the server
+    async function fetchFileList() {
+      try {
+        const response = await fetch('./'); // Replace '/getFiles' with your server endpoint
+        const files = await response.text();
+		console.log(files);
+
+        // Display file list and create download links
+        // const fileListDiv = document.getElementById('fileList');
+        // files.forEach(file => {
+        //   const downloadLink = document.createElement('a');
+        //   downloadLink.href = `/${file}`; // Replace '/download/' with your download endpoint
+        //   downloadLink.textContent = file;
+        //   downloadLink.download = file;
+        //   fileListDiv.appendChild(downloadLink);
+        //   fileListDiv.appendChild(document.createElement('br'));
+        // });
+      } catch (error) {
+        console.error('Error fetching file list:', error);
+      }
+    }
+
+    // Call the function to fetch and display files when the page loads
+    fetchFileList();
+  </script>
+</body>
+</html>
+<!-- In this example:
+
+Replace '/getFiles' and '/download/' with the actual endpoints on your server that provide the file list and handle file downloads, respectively.
+The server-side code (not included here) needs to respond to the /getFiles endpoint with a list of file names in JSON format.
+The /download/ endpoint should handle file downloads based on the provided file name.
+Please ensure your server-side code is set up to handle these requests properly and serve the files to be downloaded. This HTML page will dynamically generate download links based on the response from the server for the file list. -->
+
+
+
+
+

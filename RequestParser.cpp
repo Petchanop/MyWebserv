@@ -48,14 +48,16 @@ size_t	RequestParser::readToBuf(int sockfd, char *&buf)
 		buf = (char *)realloc(buf, bufsize + tmpReadLen + 1);
 		memmove(buf + bufsize, recvbuf, tmpReadLen);
 		buf[bufsize + tmpReadLen] = 0;
-		bufsize += tmpReadLen;
+		bufsize += tmpReadLen + 1;
 	} while (tmpReadLen >= MAXLINE);
 	return bufsize;
 }
 
 void	RequestParser::readRequest(int sockfd)
 {
-	char	*buf = NULL;
+	// char	buf[MAXLINE] = {0};
+	char *buf = NULL;
+	std::string temp = "";
 	size_t	tmpReadLen = 0;
 
 	do
@@ -69,7 +71,6 @@ void	RequestParser::readRequest(int sockfd)
 		}
 		_readLen += tmpReadLen;
 	} while (strstr(buf, "\r\n\r\n") == NULL);
-
 	std::istringstream	iss(buf);
 	std::string			line;
 	while (std::getline(iss, line))
@@ -77,13 +78,18 @@ void	RequestParser::readRequest(int sockfd)
 			break;
 	parseRequestLine(line);
 	parseHeaders(iss);
-
+	// std::cout << "requestline ="
+	// for (std::map<std::string, std::string>::const_iterator it = _headers.begin();
+			// it != _headers.end(); it++)
+	// {
+		// std::cout << "header : " << it->first << " : " << it->second << std::endl;
+	// }
 	try
 	{
 		parseMessageBody(iss.tellg(), sockfd, buf);
 		if (_msgLen > 0)
 		{
-			FILE	*fp = fopen("myfile.bin", "wb");
+			FILE	*fp = fopen("./html/download/myfile.bin", "wb");
 			if (fp == NULL)
 			{
 				// Error handling.
@@ -145,7 +151,7 @@ void	RequestParser::parseHeaders(std::istringstream &src)
 void	RequestParser::parseMessageBody(int i, int sockfd, char *&buf)
 {
 	size_t	tmpReadLen = 0;
-
+	std::cout << "msgparse : " << i << std::endl;
 	if (getMethod() == "POST")
 	{
 		_msgLen = atoi(_headers.at("Content-Length").c_str());
@@ -156,11 +162,11 @@ void	RequestParser::parseMessageBody(int i, int sockfd, char *&buf)
 			{
 				throw 0;
 			}
-			_readLen += tmpReadLen;
+			_readLen = tmpReadLen;
 		}
 	}
 	_msgBody = new char[_msgLen + 1];
-	memmove(_msgBody, buf + i, _msgLen);
+	memmove(_msgBody, buf, _msgLen);
 	_msgBody[_msgLen] = 0;
 }
 

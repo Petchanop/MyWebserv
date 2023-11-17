@@ -87,13 +87,15 @@ void Server::initAllFdset()
 void Server::waiting()
 {
 	int nready;
+	
 
 	signal(SIGINT, sigHandler);
 	signal(SIGQUIT, sigHandler);
 	while (_isRunning)
 	{
 		_readSet = _allSet;
-		nready = select(_maxFd + 1, &_readSet, NULL, NULL, NULL);
+		nready = select(_maxFd + 1, &_readSet, &_writeSet, &_exceptSet, NULL);
+		
 		if (nready >= 0)
 		{
 			for (std::vector<Socket *>::iterator it = _allSock.begin();
@@ -162,9 +164,24 @@ int Server::checkClient(std::pair<const int, t_serverData> &fdToServ, int &nread
 {
 	int 	sockfd;
 
+	
 	if ((sockfd = fdToServ.first) < 0)
 	{
 		return 0;
+	}
+
+	//check for readability
+	if (FD_ISSET(sockfd, &_readSet)) {
+			printf("File descriptor is set for reading.\n");
+		} else {
+			printf("File descriptor is not set for reading.\n");
+		}
+
+    // Check for writability
+	if (FD_ISSET(sockfd, &_writeSet)) {
+		printf("File descriptor is set for writing.\n");
+	} else {
+		printf("File descriptor is not set for writing.\n");
 	}
 
 	if (FD_ISSET(sockfd, &_readSet))
@@ -177,8 +194,9 @@ int Server::checkClient(std::pair<const int, t_serverData> &fdToServ, int &nread
 			return 0;
 		}
 		const char *response = rp.getResponse().c_str();
-		write(sockfd, response, strlen(response));
-
+		int writeSize = write(sockfd, response, rp.getResponse().length());
+		if (writeSize < 0)
+			perror("write : ");
 		return (--nready <= 0);
 	}
 	return 0;

@@ -16,7 +16,7 @@
 # include "helper.hpp"
 # include "webservStruct.hpp"
 
-# define MAXLINE 3000
+# define MAXLINE 100000
 
 class RequestParser {
 private:

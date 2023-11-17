@@ -6,8 +6,8 @@ $file = $_FILES['file'];
 // Check if the file was uploaded successfully.
 if ($file['error'] == UPLOAD_ERR_OK) {
   // Create the directory "uploads/" if it does not exist.
-  if (!is_dir('uploads/')) {
-    mkdir('uploads/');
+  if (!is_dir('./uploads/')) {
+    mkdir('./uploads/');
   }
 
   // Move the uploaded file to a permanent location.

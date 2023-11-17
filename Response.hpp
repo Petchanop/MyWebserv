@@ -14,6 +14,7 @@
 # include <set>
 # include <utility>
 # include <algorithm>
+# include <fcntl.h>
 # include "ConfigParser.hpp"
 # include "RequestParser.hpp"
 # include "CgiHandler.hpp"

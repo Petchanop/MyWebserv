@@ -11,6 +11,7 @@ SRCS = $(addsuffix .cpp, $(SRC_FILE))
 OBJS = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(SRC_FILE)))
 
 all: $(NAME)
+	c++ -Wall -Werror -Wextra -std=c++98 cgi-bin/CgiFormHandle.cpp cgi/CgiPostHandle.cpp -o cgi-bin/testcgi
 
 $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $@ 
